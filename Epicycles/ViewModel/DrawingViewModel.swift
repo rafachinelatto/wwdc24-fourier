@@ -21,9 +21,15 @@ class DrawingViewModel: ObservableObject {
         self.epiclyclePath = epicyclePath
     }
     
-    @MainActor func configuration(center: CGPoint, complexPoints: [Complex]) async {
+    func configuration(center: CGPoint, complexPoints: [Complex]) {
         self.center = center
         self.fourierSeries = DFT(complexPoints)
+    }
+    
+    func reset() {
+        self.fourierSeries.removeAll()
+        self.wave.removeAll()
+        self.epiclyclePath = Path()
     }
 
     func updateWave(time: CGFloat, numberOfCircles: Int) {
@@ -56,7 +62,7 @@ class DrawingViewModel: ObservableObject {
         wave.append(newPoint)
         self.epiclyclePath = path
         
-        if wave.count >= (fourierSeries.count - 10) {
+        if wave.count >= Int(Double(fourierSeries.count) * 0.95) {
             wave.removeFirst()
         }
     }

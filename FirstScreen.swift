@@ -23,7 +23,7 @@ struct FirstScreen: View {
                 .font(.largeTitle)
                 Spacer()
                     .navigationDestination(isPresented: $start) {
-                        InputDrawing()
+                        FourierView()
                             .navigationBarBackButtonHidden()
                     }
             }

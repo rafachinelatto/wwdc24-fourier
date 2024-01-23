@@ -64,8 +64,6 @@ struct InputDrawing: View {
                         .onAppear {
                             canvasSize = geometry.size
                             center = CGPoint(x: geometry.size.width/2, y: geometry.size.height/2)
-                            print(canvasSize)
-                            print(center!)
                         }
                 }
             }
