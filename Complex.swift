@@ -39,26 +39,6 @@ extension Complex {
     }
 }
 
-func DFT(_ x:[Complex]) -> [Complex] {
-    
-    var X = [Complex]()
-    let N = x.count
-    
-    for k in 0..<N {
-        var Xk = Complex(re: 0, im: 0, freq: k)
-        
-        for n in 0..<N {
-            let aux = Complex(re: cos((2*Double.pi*Double(k*n))/Double(N)), im: -sin((2*Double.pi*Double(k*n))/Double(N)))
-            
-            Xk = Xk + (x[n] * aux)
-        }
-        
-        Xk = Xk * Complex(re: 1/Double(N), im: 0)
-        X.append(Xk)
-    }
-    
-    let XSorted = X.sorted{ $0.mod > $1.mod }
-    return XSorted
-}
+
 
 

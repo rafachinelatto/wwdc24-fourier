@@ -7,7 +7,6 @@
 
 import Foundation
 import SwiftUI
-
 struct FourierView: View {
     
     @ObservedObject private var viewModel = DrawingViewModel()
@@ -28,26 +27,60 @@ struct FourierView: View {
     
     
     var body: some View {
+        
         VStack {
-            Stepper("Número de círculos: \(Int(numberOfCircles))", onIncrement: {
-                if (numberOfCircles >= 1 && numberOfCircles < 10) {
-                    numberOfCircles += 1
-                } else if (numberOfCircles >= 10 && numberOfCircles < 100) {
-                    numberOfCircles += 10
-                } else if (numberOfCircles >= 100 && numberOfCircles < 700) {
-                    numberOfCircles += 100
-                }
-            }, onDecrement: {
-                if (numberOfCircles > 1 && numberOfCircles <= 10) {
-                    numberOfCircles -= 1
-                } else if (numberOfCircles > 10 && numberOfCircles <= 100) {
-                    numberOfCircles -= 10
-                } else if (numberOfCircles > 100 && numberOfCircles <= 700) {
-                    numberOfCircles -= 100
-                }
-            }).padding()
             
-            
+            if showFourier == true {
+                
+                if #available(iOS 17.0, *) {
+                    
+                    Stepper("Número de círculos: \(Int(numberOfCircles))", onIncrement: {
+                        if (numberOfCircles >= 1 && numberOfCircles < 10) {
+                            numberOfCircles += 1
+                        } else if (numberOfCircles >= 10 && numberOfCircles < 100) {
+                            numberOfCircles += 10
+                        } else if (numberOfCircles >= 100 && numberOfCircles < 1000) {
+                            numberOfCircles += 100
+                        }
+                    }, onDecrement: {
+                        if (numberOfCircles > 1 && numberOfCircles <= 10) {
+                            numberOfCircles -= 1
+                        } else if (numberOfCircles > 10 && numberOfCircles <= 100) {
+                            numberOfCircles -= 10
+                        } else if (numberOfCircles > 100 && numberOfCircles <= 1000) {
+                            numberOfCircles -= 100
+                        }
+                    }).padding()
+                        .onChange(of: numberOfCircles) { oldValue, newValue in
+                            viewModel.resetDrawing()
+                        }
+                } else {
+                    Stepper("Número de círculos: \(Int(numberOfCircles))", onIncrement: {
+                        if (numberOfCircles >= 1 && numberOfCircles < 10) {
+                            numberOfCircles += 1
+                        } else if (numberOfCircles >= 10 && numberOfCircles < 100) {
+                            numberOfCircles += 10
+                        } else if (numberOfCircles >= 100 && numberOfCircles < 1000) {
+                            numberOfCircles += 100
+                        }
+                    }, onDecrement: {
+                        if (numberOfCircles > 1 && numberOfCircles <= 10) {
+                            numberOfCircles -= 1
+                        } else if (numberOfCircles > 10 && numberOfCircles <= 100) {
+                            numberOfCircles -= 10
+                        } else if (numberOfCircles > 100 && numberOfCircles <= 1000) {
+                            numberOfCircles -= 100
+                        }
+                    }).padding()
+                        .onChange(of: numberOfCircles) { newValue in
+                            viewModel.resetDrawing()
+                        }
+                }
+            } else {
+                Text("Draw Something")
+                    .font(.title)
+                    .padding()
+            }
             
             Canvas { contex, size in
                 
@@ -55,7 +88,7 @@ struct FourierView: View {
                     
                     var path = Path()
                     path.addLines(points)
-                    contex.stroke(path, with: .color(.orange), style: StrokeStyle(lineWidth: 3))
+                    contex.stroke(path, with: .color(.mint), style: StrokeStyle(lineWidth: 3))
                 }
                 
                 else {
@@ -67,9 +100,9 @@ struct FourierView: View {
                     if viewModel.wave.count > 2 {
                         wavePath.addLines(viewModel.wave)
                     }
-                    contex.stroke(wavePath, with: .color(.red), style: StrokeStyle(lineWidth: 3))
+                    contex.stroke(wavePath, with: .color(.mint), style: StrokeStyle(lineWidth: 3))
                     
-                    contex.stroke(viewModel.epiclyclePath, with: .color(.gray), style: StrokeStyle(lineWidth: 1))
+                    contex.stroke(viewModel.epiclyclePath, with: .color(.secondary), style: StrokeStyle(lineWidth: 1))
                     
                 }
                 
@@ -110,24 +143,40 @@ struct FourierView: View {
 
             HStack {
                 
-                Button("Use this drawing") {
-                    viewModel.configuration(center: center ?? .zero, complexPoints: complexPoints)
-                    showFourier = true
+                if showFourier == false {
+                    
+                    Button("Fourier Transform") {
+                        viewModel.configuration(center: center ?? .zero, complexPoints: complexPoints)
+                        showFourier = true
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .disabled(!finishedDrawing)
+                    
+                    Button("Redraw") {
+                        points.removeAll()
+                        complexPoints.removeAll()
+                        viewModel.reset()
+                        finishedDrawing = false
+                        showFourier = false
+                        numberOfCircles = 2
+                    }
+                    .buttonStyle(.bordered)
+                    .disabled(!finishedDrawing)
+                    
+                } else {
+                    Button("Redraw") {
+                        points.removeAll()
+                        complexPoints.removeAll()
+                        viewModel.reset()
+                        finishedDrawing = false
+                        showFourier = false
+                        numberOfCircles = 2
+                    }
+                    .buttonStyle(.bordered)
+                    .disabled(!finishedDrawing)
                 }
-                .buttonStyle(.bordered)
-                .disabled(!finishedDrawing)
-                
-                Button("Redraw") {
-                    points.removeAll()
-                    complexPoints.removeAll()
-                    viewModel.reset()
-                    finishedDrawing = false
-                    showFourier = false
-                }
-                .buttonStyle(.bordered)
-                .disabled(!finishedDrawing)
-                
             }
+            .padding(.bottom)
             .onReceive(timer) { _ in
                 let dt: Double = (2 * Double.pi) / Double(viewModel.fourierSeries.count)
                 if showFourier == false {

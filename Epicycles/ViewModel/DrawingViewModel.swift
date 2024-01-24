@@ -23,13 +23,17 @@ class DrawingViewModel: ObservableObject {
     
     func configuration(center: CGPoint, complexPoints: [Complex]) {
         self.center = center
-        self.fourierSeries = DFT(complexPoints)
+        self.fourierSeries = self.DFT(complexPoints)
     }
     
     func reset() {
         self.fourierSeries.removeAll()
         self.wave.removeAll()
         self.epiclyclePath = Path()
+    }
+    
+    func resetDrawing() {
+        self.wave.removeAll()
     }
 
     func updateWave(time: CGFloat, numberOfCircles: Int) {
@@ -65,5 +69,27 @@ class DrawingViewModel: ObservableObject {
         if wave.count >= Int(Double(fourierSeries.count) * 0.95) {
             wave.removeFirst()
         }
+    }
+    
+    func DFT(_ x:[Complex]) -> [Complex] {
+        
+        var X = [Complex]()
+        let N = x.count
+        
+        for k in 0..<N {
+            var Xk = Complex(re: 0, im: 0, freq: k)
+            
+            for n in 0..<N {
+                let aux = Complex(re: cos((2*Double.pi*Double(k*n))/Double(N)), im: -sin((2*Double.pi*Double(k*n))/Double(N)))
+                
+                Xk = Xk + (x[n] * aux)
+            }
+            
+            Xk = Xk * Complex(re: 1/Double(N), im: 0)
+            X.append(Xk)
+        }
+        
+        let XSorted = X.sorted{ $0.mod > $1.mod }
+        return XSorted
     }
 }
