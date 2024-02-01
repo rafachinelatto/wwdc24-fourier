@@ -6,6 +6,7 @@
 //
 
 import Vision
+import CoreImage
 
 class ContourDetector {
     static let shared = ContourDetector()
@@ -14,9 +15,27 @@ class ContourDetector {
     
     private lazy var request: VNDetectContoursRequest = {
         let req = VNDetectContoursRequest()
+        req.detectsDarkOnLight = true
         return req
     }()
     
+    private var epsilon: Float = 0.001
+    
+    func processV2(image: CIImage?) throws -> [Contour] {
+        guard let image = image else {
+            print("Failed to load ciImage in contour detector")
+            return []
+        }
+        
+        let contourRequest = try performV2(request: request, on: image)
+        return postProcess(request: contourRequest)
+    }
+    
+    func performV2(request: VNRequest, on image: CIImage) throws -> VNRequest {
+        let requestHandler = VNImageRequestHandler(ciImage: image, options: [:])
+        try requestHandler.perform([request])
+        return request
+    }
     
     func process(image: CGImage?) throws -> [Contour] {
         guard let image = image else {
@@ -44,10 +63,32 @@ class ContourDetector {
             return []
         }
         
+//        let vnContours = results.flatMap { contour in
+//            (0..<contour.contourCount).compactMap { try? contour.contour(at: $0) }
+//        }
+        
         let vnContours = results.flatMap { contour in
-            (0..<contour.contourCount).compactMap { try? contour.contour(at: $0) }
+            contour.topLevelContours
         }
         
-        return vnContours.map { Contour(vnContour: $0) }
+        let simplifiedContours = vnContours.compactMap {
+            try? $0.polygonApproximation(epsilon: self.epsilon)
+        }
+        
+        return simplifiedContours.map { Contour(vnContour: $0) }
+    }
+    
+    func set(contrastPivot: CGFloat?) {
+        request.contrastPivot = contrastPivot.map {
+            NSNumber(value: $0)
+        }
+    }
+    
+    func set(contrastAdjustment: CGFloat) {
+        request.contrastAdjustment = Float(contrastAdjustment)
+    }
+    
+    func set(epsilon: CGFloat) {
+        self.epsilon = Float(epsilon)
     }
 }

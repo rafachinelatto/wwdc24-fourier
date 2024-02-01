@@ -21,23 +21,25 @@ class BackgroundRemover {
         return req
     }()
     
-//    private func perform(request: VNRequest, on image: CIImage) throws -> (VNRequest, VNImageRequestHandler) {
-//        
-//        let requestHandler = VNImageRequestHandler(ciImage: image, options: [:])
-//        
-//        try requestHandler.perform([request])
-//        
-//        return (request, requestHandler)
-//    }
-//    
-//    private func postProcess(request: VNRequest, requestHandler: VNImageRequestHandler) throws -> CVPixelBuffer? {
-//        
-//        guard let result = request.results?.first as? VNInstanceMaskObservation else { return nil }
-//        
-//        let output = try result.generateScaledMaskForImage(forInstances: result.allInstances, from: requestHandler)
-//
-//        return output
-//    }
+    func processV2(image: UIImage) throws -> CIImage? {
+        guard let inputImageNoOrientation = CIImage(image: image) else {
+            print("Failed to create CIImage")
+            return nil
+        }
+        
+        let orientation = image.imageOrientation
+        let inputImage = inputImageNoOrientation.oriented(CGImagePropertyOrientation(orientation))
+        
+        
+        guard let maskImage = try perform(request: request, on: inputImage) else {
+            print("Failed to create mask Image")
+            return nil
+        }
+        
+        let outputImage = apply(mask: maskImage, toImage: inputImage)        
+        return outputImage
+    }
+    
     
     func process(image: UIImage) throws -> UIImage? {
         
@@ -82,7 +84,8 @@ class BackgroundRemover {
         let filter = CIFilter.blendWithMask()
         filter.inputImage = image
         filter.maskImage = mask
-        filter.backgroundImage = CIImage.empty()
+        let backgroundImage = CIImage(color: CIColor.white).cropped(to: image.extent)
+        filter.backgroundImage = backgroundImage
         return filter.outputImage!
     }
     
