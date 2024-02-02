@@ -31,6 +31,9 @@ let package = Package(
                 .landscapeRight,
                 .landscapeLeft,
                 .portraitUpsideDown(.when(deviceFamilies: [.pad]))
+            ],
+            capabilities: [
+                .camera(purposeString: "A camera é usada para tirar uma foto que será usada no app, essa foto não é salva em nenhum lugar.")
             ]
         )
     ],

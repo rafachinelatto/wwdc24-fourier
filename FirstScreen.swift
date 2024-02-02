@@ -24,7 +24,8 @@ struct FirstScreen: View {
                 Spacer()
                     .navigationDestination(isPresented: $start) {
                         //FourierView()
-                        ImageProcessingView()
+                        //ImageProcessingView()
+                        CameraView()
                             .navigationBarBackButtonHidden()
                     }
             }
