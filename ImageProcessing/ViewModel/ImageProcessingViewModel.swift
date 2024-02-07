@@ -48,6 +48,12 @@ class ImageProcessingViewModel: ObservableObject {
         let backgroundRemover = BackgroundRemover.shared
         do {
             let processedImage = try backgroundRemover.processV2(image: image)
+            if let processedImage = processedImage {
+                DispatchQueue.main.async {
+                    self.outputImage = self.render(ciImage: processedImage)
+                }
+            }
+            
             return processedImage
         } catch {
             print(error.localizedDescription)
@@ -66,6 +72,21 @@ class ImageProcessingViewModel: ObservableObject {
         let detector = ContourDetector.shared
         
         detector.set(epsilon: 0.001)
+//        detector.set(contrastPivot: 0.7)
+//        detector.set(contrastAdjustment: 3.0)
+//        contours.append(contentsOf: ( try? detector.processV2(image: ciImage)) ?? [])
+//        
+//        detector.set(contrastPivot: 0.6)
+//        detector.set(contrastAdjustment: 2.0)
+//        contours.append(contentsOf: ( try? detector.processV2(image: ciImage)) ?? [])
+//        
+//        detector.set(contrastPivot: 0.4)
+//        detector.set(contrastAdjustment: 1.0)
+//        contours.append(contentsOf: ( try? detector.processV2(image: ciImage)) ?? [])
+//        
+//        detector.set(contrastPivot: 0.3)
+//        detector.set(contrastAdjustment: 0.5)
+//        contours.append(contentsOf: ( try? detector.processV2(image: ciImage)) ?? [])
         
         for pivot in pivotStride {
             for adjustment in adjustStride {
@@ -80,8 +101,10 @@ class ImageProcessingViewModel: ObservableObject {
             }
         }
         
+        
+        print(contours.count)
         if contours.count < 9000 {
-            let iouThreshold = 0.7
+            let iouThreshold = 0.5
             
             var pos = 0
             while pos < contours.count {
@@ -94,5 +117,14 @@ class ImageProcessingViewModel: ObservableObject {
             }
         }
         return contours
+    }
+    
+    
+    
+    private func render(ciImage: CIImage) -> UIImage {
+        guard let cgImage = CIContext(options: nil).createCGImage(ciImage, from: ciImage.extent) else {
+            fatalError("Failed to render CGImage")
+        }
+        return UIImage(cgImage: cgImage)
     }
 }

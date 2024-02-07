@@ -2,82 +2,51 @@
 //  CameraView.swift
 //
 //
-//  Created by Rafael Antonio Chinelatto on 01/02/24.
+//  Created by Rafael Antonio Chinelatto on 05/02/24.
 //
 
 import SwiftUI
+import PhotosUI
+
 
 struct CameraView: View {
-    
-    @StateObject private var model = CameraViewModel()
+    @State private var showCamera = false
+    @State private var selectedImage: UIImage?
+    @State var image: UIImage?
+    @State var goToImageProcessingView: Bool = false
     
     var body: some View {
-        ZStack {
-            FrameView(image: model.frame)
-                .ignoresSafeArea(edges: .all)
-            
-            VStack {
-
-                if model.isTaken {
-                    
-                    HStack {
-                        
-                        Spacer()
-                        
-                        Button(action: {}, label: {
-                            Image(systemName: "arrow.triangle.2.circlepath.camera")
-                                .foregroundStyle(.black)
-                                .padding()
-                                .background(Color.white)
-                                .clipShape(Circle())
-                        })
-                        .padding(.trailing, 10)
-                    }
-                }
-                
-                Spacer()
+        VStack {
+            if let selectedImage {
+                Image(uiImage: selectedImage)
+                    .resizable()
+                    .scaledToFit()
                 
                 HStack {
-                    if model.isTaken {
-                        
-                        Button(action: {} , label: {
-                            Text("Use image")
-                                .foregroundStyle(.black)
-                                .fontWeight(.semibold)
-                                .padding(.vertical, 10)
-                                .padding(.horizontal, 20)
-                                .background(Color.white)
-                                .clipShape(Capsule())
-                        })
-                        .padding(.leading)
-                        
-                        Spacer()
+                    Button("Retake") {
+                        self.showCamera.toggle()
                     }
-                    else {
-                        Button {
-                            model.isTaken.toggle()
-                        } label: {
-                            ZStack {
-                                
-                                Circle()
-                                    .fill(Color.white)
-                                    .frame(width: 65, height: 65)
-                                
-                                Circle()
-                                    .stroke(Color.white, lineWidth: 2)
-                                    .frame(width: 75, height: 75)
-                            }
-                        }
-                    }
+                    .buttonStyle(.bordered)
                     
+                    Button("Use this Image") {
+                        goToImageProcessingView = true
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .navigationDestination(isPresented: $goToImageProcessingView) {
+                        ImageProcessingView(image: selectedImage)
+                    }
                 }
             }
-            
-            CameraErrorView(error: model.error)
+            else {
+                
+                Button("Take a picture") {
+                    self.showCamera.toggle()
+                }
+            }
+        }
+        .fullScreenCover(isPresented: self.$showCamera) {
+            AccessCameraView(selectedImage: self.$selectedImage)
         }
     }
 }
 
-#Preview {
-    CameraView()
-}

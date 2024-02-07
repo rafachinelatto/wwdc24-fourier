@@ -66,9 +66,9 @@ class ContourDetector {
 //        let vnContours = results.flatMap { contour in
 //            (0..<contour.contourCount).compactMap { try? contour.contour(at: $0) }
 //        }
-        
+//        
         let vnContours = results.flatMap { contour in
-            contour.topLevelContours
+            contour.topLevelContours 
         }
         
         let simplifiedContours = vnContours.compactMap {
