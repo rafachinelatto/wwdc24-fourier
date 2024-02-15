@@ -12,7 +12,7 @@ struct Contour: Identifiable, Hashable {
     let id = UUID()
     let area: Double
     
-    private let vnContour: VNContour
+    let vnContour: VNContour
     
     init(vnContour: VNContour) {
         self.vnContour = vnContour

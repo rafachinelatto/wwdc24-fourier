@@ -22,11 +22,6 @@ class BackgroundRemover {
         return req
     }()
     
-    private lazy var faceDetectRequest: VNDetectFaceLandmarksRequest = {
-        let req = VNDetectFaceLandmarksRequest()
-        return req
-    }()
-    
     func processV2(image: UIImage) throws -> CIImage? {
         guard let inputImageNoOrientation = CIImage(image: image) else {
             print("Failed to create CIImage")
@@ -44,7 +39,7 @@ class BackgroundRemover {
         
         let outputImage = apply(mask: maskImage, toImage: inputImage)
         
-        //let outputImage = try faceContour(request: faceDetectRequest, on: maskedImage)
+
         
         let filteredOutputImage = outputImage.addFilter(filterType: .Tonal).addFilter(filterType: .NoiseReduction).addFilter(filterType: .Posterize)
         //.addFilter(filterType: .Sharpen).addFilter(filterType: .Posterize).addFilter(filterType: .Sharpen)
@@ -74,71 +69,6 @@ class BackgroundRemover {
         let backgroundImage = CIImage(color: CIColor.white).cropped(to: image.extent)
         filter.backgroundImage = backgroundImage
         return filter.outputImage!
-    }
-    
-    
-    private func faceContour(request: VNRequest, on image: CIImage) throws -> CIImage {
-        
-        let handler = VNImageRequestHandler(ciImage: image)
-        
-        try handler.perform([request])
-        
-        guard let result = request.results?.first as? VNFaceObservation else {
-            print("No person found in image")
-            return image
-        }
-        
-        guard let face = result.landmarks?.faceContour else {
-            print("No face contour found")
-            return image
-        }
-        
-        let faceContourPointsInImageCoodinate = face.pointsInImage(imageSize: CGSize(width: image.extent.width, height: image.extent.height))
-        
-        let mask = createMask(points: faceContourPointsInImageCoodinate, rect: image.extent)
-        
-        let outputImage = apply(mask: mask, toImage: image)
-        return outputImage
-    }
-    
-    private func createMask(points: [CGPoint], rect: CGRect) -> CIImage {
-        var normalizedPoints = points
-        normalizedPoints.removeFirst()
-        normalizedPoints.removeLast()
-        
-        for i in 0..<normalizedPoints.count {
-            normalizedPoints[i].y = ((rect.height - normalizedPoints[i].y))
-        }
-        
-        let renderer = UIGraphicsImageRenderer(size: CGSize(width: rect.width / 3, height: rect.height / 3))
-        let img = renderer.image { contex in
-            contex.cgContext.addLines(between: normalizedPoints)
-            contex.cgContext.move(to: normalizedPoints.last ?? CGPoint.zero)
-            contex.cgContext.addLine(to: CGPoint(x: 0, y: normalizedPoints.last?.y ?? 0))
-            contex.cgContext.addLine(to: CGPoint(x: 0, y: 0))
-            contex.cgContext.addLine(to: CGPoint(x: rect.width, y: 0))
-            contex.cgContext.addLine(to: CGPoint(x: rect.width, y: normalizedPoints.first?.y ?? 0))
-            contex.cgContext.addLine(to: normalizedPoints.first ?? .zero)
-            contex.cgContext.closePath()
-            
-            contex.cgContext.setFillColor(UIColor.white.cgColor)
-            contex.cgContext.fillPath()
-        }
-        guard let cgImage = img.cgImage else {
-            print("Failed to create face contour mask")
-            let ciImage = CIImage(color: .white)
-            let mask = ciImage.cropped(to: rect)
-            return mask
-        }
-        let ciImage = CIImage(cgImage: cgImage)
-        return ciImage
-    }
-    
-    private func render(ciImage: CIImage) -> UIImage {
-        guard let cgImage = CIContext(options: nil).createCGImage(ciImage, from: ciImage.extent) else {
-            fatalError("Failed to render CGImage")
-        }
-        return UIImage(cgImage: cgImage)
     }
 }
 

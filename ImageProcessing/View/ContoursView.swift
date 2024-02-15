@@ -16,6 +16,7 @@ struct ContoursView: View {
         ForEach(contours) { contour in
           path(for: contour, in: geometry.frame(in: .local))
             .stroke(Color.gray, lineWidth: 1)
+            
         }
       }
     }

@@ -18,13 +18,24 @@ struct ImageProcessingView: View {
         if !model.contours.isEmpty {
             VStack {
                 
-                if let outputImage = model.outputImage {
-                    Image(uiImage: outputImage)
-                        .resizable()
-                        .scaledToFit()
-                }
+//                if let outputImage = model.outputImage {
+//                    Image(uiImage: outputImage)
+//                        .resizable()
+//                        .scaledToFit()
+//                }
                 
                 ContoursView(contours: model.contours)
+                
+                Path { path in
+                    
+                    path.move(to: model.points.first ?? .zero)
+                    for i in 0..<model.points.count {
+                        if i >= 1 {
+                            path.addLine(to: model.points[i])
+                        }
+                    }
+                    path.closeSubpath()
+                }.stroke(style: StrokeStyle(lineWidth: 1))
             }
         }
         

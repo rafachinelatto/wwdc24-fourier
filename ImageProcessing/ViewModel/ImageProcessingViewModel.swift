@@ -14,6 +14,7 @@ class ImageProcessingViewModel: ObservableObject {
     @Published var outputImage: UIImage?
     @Published var contours: [Contour] = []
     @Published var calculating: Bool = false
+    @Published var points: [CGPoint] = []
     
     init() {}
     
@@ -31,7 +32,8 @@ class ImageProcessingViewModel: ObservableObject {
             let contours = await asyncGetContours(ciImage: ciImage)
             
             DispatchQueue.main.async {
-                self.contours = contours
+                self.contours = contours.0
+                self.points = contours.1
                 self.calculating = false
                 print("Finished")
             }
@@ -62,44 +64,34 @@ class ImageProcessingViewModel: ObservableObject {
     }
     
     
-    func asyncGetContours(ciImage: CIImage?) async -> [Contour] {
+    func asyncGetContours(ciImage: CIImage?) async -> ([Contour], [CGPoint]) {
         
         var contours = [Contour]()
         
-        let pivotStride = stride(from: 0.3, to: 0.6, by: 0.1)
-        let adjustStride = stride(from: 0.4, to: 2.6, by: 0.2)
+//        let pivotStride = stride(from: 0.3, to: 0.6, by: 0.1)
+//        let adjustStride = stride(from: 0.4, to: 2.6, by: 0.2)
 
         let detector = ContourDetector.shared
         
+        detector.set(contrastPivot: 0.5)
+        detector.set(contrastAdjustment: 3.0)
         detector.set(epsilon: 0.001)
-//        detector.set(contrastPivot: 0.7)
-//        detector.set(contrastAdjustment: 3.0)
-//        contours.append(contentsOf: ( try? detector.processV2(image: ciImage)) ?? [])
-//        
-//        detector.set(contrastPivot: 0.6)
-//        detector.set(contrastAdjustment: 2.0)
-//        contours.append(contentsOf: ( try? detector.processV2(image: ciImage)) ?? [])
-//        
-//        detector.set(contrastPivot: 0.4)
-//        detector.set(contrastAdjustment: 1.0)
-//        contours.append(contentsOf: ( try? detector.processV2(image: ciImage)) ?? [])
-//        
-//        detector.set(contrastPivot: 0.3)
-//        detector.set(contrastAdjustment: 0.5)
-//        contours.append(contentsOf: ( try? detector.processV2(image: ciImage)) ?? [])
         
-        for pivot in pivotStride {
-            for adjustment in adjustStride {
-
-                
-                detector.set(contrastPivot: pivot)
-                detector.set(contrastAdjustment: adjustment)
-                
-                let newContours = ( try? detector.processV2(image: ciImage)) ?? []
-                
-                contours.append(contentsOf: newContours)
-            }
-        }
+        let newCountours = ( try? detector.processV2(image: ciImage)) ?? []
+        contours.append(contentsOf: newCountours)
+        
+//        for pivot in pivotStride {
+//            for adjustment in adjustStride {
+//
+//                
+//                detector.set(contrastPivot: pivot)
+//                detector.set(contrastAdjustment: adjustment)
+//                
+//                let newContours = ( try? detector.processV2(image: ciImage)) ?? []
+//                
+//                contours.append(contentsOf: newContours)
+//            }
+//        }
         
         
         print(contours.count)
@@ -116,7 +108,19 @@ class ImageProcessingViewModel: ObservableObject {
                 pos += 1
             }
         }
-        return contours
+        
+        var points = [CGPoint]()
+        for contour in contours {
+            let pointsInContour = contour.vnContour.normalizedPoints
+            
+            for point in pointsInContour {
+                
+                
+                let newPoint = CGPoint(x: Int(point.x * 300) + 50, y: Int(300 - (point.y * 300)) + 50)
+                points.append(newPoint)
+            }
+        }
+        return (contours, points)
     }
     
     

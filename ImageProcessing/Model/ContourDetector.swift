@@ -63,13 +63,13 @@ class ContourDetector {
             return []
         }
         
-//        let vnContours = results.flatMap { contour in
-//            (0..<contour.contourCount).compactMap { try? contour.contour(at: $0) }
-//        }
-//        
         let vnContours = results.flatMap { contour in
-            contour.topLevelContours 
+            (0..<contour.contourCount).compactMap { try? contour.contour(at: $0) }
         }
+
+//        let vnContours = results.flatMap { contour in
+//            contour.topLevelContours 
+//        }
         
         let simplifiedContours = vnContours.compactMap {
             try? $0.polygonApproximation(epsilon: self.epsilon)
