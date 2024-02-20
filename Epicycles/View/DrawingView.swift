@@ -48,9 +48,6 @@ struct DrawingView: View {
             })
         }
         .padding()
-        .task {
-           // await viewModel.configuration(center: center, complexPoints: complexPoints)
-        }
     }
 }
 
