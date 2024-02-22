@@ -50,10 +50,12 @@ struct FourierView: View {
                         } else if (numberOfCircles > 100 && numberOfCircles <= 1000) {
                             numberOfCircles -= 100
                         }
-                    }).padding()
-                        .onChange(of: numberOfCircles) { oldValue, newValue in
-                            viewModel.resetDrawing()
-                        }
+                    })
+                    .padding(.leading)
+                    .padding(.trailing)
+                    .onChange(of: numberOfCircles) { oldValue, newValue in
+                        viewModel.resetDrawing()
+                    }
                 } else {
                     Stepper("Número de círculos: \(Int(numberOfCircles))", onIncrement: {
                         if (numberOfCircles >= 1 && numberOfCircles < 10) {
@@ -71,75 +73,91 @@ struct FourierView: View {
                         } else if (numberOfCircles > 100 && numberOfCircles <= 1000) {
                             numberOfCircles -= 100
                         }
-                    }).padding()
-                        .onChange(of: numberOfCircles) { newValue in
-                            viewModel.resetDrawing()
-                        }
+                    })
+                    .padding(.leading)
+                    .padding(.trailing)
+                    .onChange(of: numberOfCircles) { newValue in
+                        viewModel.resetDrawing()
+                    }
                 }
-            } else {
-                Text("Draw Something")
-                    .font(.title)
-                    .padding()
             }
             
-            Canvas { contex, size in
-                
-                if showFourier == false {
-                    
-                    var path = Path()
-                    path.addLines(points)
-                    contex.stroke(path, with: .color(.mint), style: StrokeStyle(lineWidth: 3))
-                }
-                
-                else {
-                    var path = Path()
-                    path.addLines(points)
-                    contex.stroke(path, with: .color(.gray), style: StrokeStyle(lineWidth: 3))
-                    
-                    var wavePath = Path()
-                    if viewModel.wave.count > 2 {
-                        wavePath.addLines(viewModel.wave)
-                    }
-                    contex.stroke(wavePath, with: .color(.mint), style: StrokeStyle(lineWidth: 3))
-                    
-                    contex.stroke(viewModel.epiclyclePath, with: .color(.secondary), style: StrokeStyle(lineWidth: 1))
-                    
-                }
-                
-            }.background() {
-                GeometryReader { geometry in
-                    Color.clear
-                        .onAppear {
-                            canvasSize = geometry.size
-                            canvasRect = geometry.frame(in: .local)
-                            center = CGPoint(x: geometry.size.width/2, y: geometry.size.height/2)
-                            print(canvasSize)
+            ZStack {
+                if points.isEmpty {
+                    VStack {
+                        Spacer()
+                        HStack {
+                            Spacer()
+                            Text("Draw Something")
+                                .font(.largeTitle)
+                                .foregroundStyle(.secondary)
+                            Spacer()
                         }
-                    
+                        Spacer()
+                    }
                 }
-            }
-            .gesture(
-                DragGesture(minimumDistance: 0, coordinateSpace: .local)
-                    .onChanged{ value in
-                        if finishedDrawing == false {
-                            
-                            let newPoint = value.location
-                            
-                            if canvasRect.contains(newPoint) {
-                                points.append(newPoint)
+                
+                Canvas { contex, size in
+                    
+                    if showFourier == false {
+                        
+                        var path = Path()
+                        path.addLines(points)
+                        path.addLine(to: points.first ?? .zero)
+                        contex.stroke(path, with: .color(.accentColor), style: StrokeStyle(lineWidth: 4))
+                        
+                    }
+                    
+                    else {
+                        var path = Path()
+                        path.addLines(points)
+                        contex.stroke(path, with: .color(.secondary), style: StrokeStyle(lineWidth: 3))
+                        
+                        var wavePath = Path()
+                        if viewModel.wave.count > 2 {
+                            wavePath.addLines(viewModel.wave)
+                        }
+                        contex.stroke(wavePath, with: .color(.accentColor), style: StrokeStyle(lineWidth: 4))
+                        
+                        contex.stroke(viewModel.epiclyclePath, with: .color(.secondary), style: StrokeStyle(lineWidth: 0.5))
+                        
+                    }
+                    
+                }.background() {
+                    GeometryReader { geometry in
+                        Color.clear
+                            .onAppear {
+                                canvasSize = geometry.size
+                                canvasRect = geometry.frame(in: .local)
+                                center = CGPoint(x: geometry.size.width/2, y: geometry.size.height/2)
+                                print(canvasSize)
                             }
-                            
-                            let complexPoint = Complex(re: (-canvasSize.width/2 + newPoint.x), im: (-canvasSize.height/2 + newPoint.y))
-                            complexPoints.append(complexPoint)
-                        }
+                        
                     }
-                    .onEnded { value in
-                        if let point = points.first {
-                            points.append(point)
+                }
+                .gesture(
+                    DragGesture(minimumDistance: 0, coordinateSpace: .local)
+                        .onChanged{ value in
+                            if finishedDrawing == false {
+                                
+                                let newPoint = value.location
+                                
+                                if canvasRect.contains(newPoint) {
+                                    points.append(newPoint)
+                                }
+                                
+                                let complexPoint = Complex(re: (-canvasSize.width/2 + newPoint.x), im: (-canvasSize.height/2 + newPoint.y))
+                                complexPoints.append(complexPoint)
+                            }
                         }
-                        finishedDrawing = true
-                    }
-            )
+                        .onEnded { value in
+                            if let point = points.first {
+                                points.append(point)
+                            }
+                            finishedDrawing = true
+                        }
+                )
+            }
 
             HStack {
                 

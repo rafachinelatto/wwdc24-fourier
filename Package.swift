@@ -37,9 +37,15 @@ let package = Package(
             ]
         )
     ],
+    dependencies: [
+        .package(url: "https://github.com/colinc86/LaTeXSwiftUI.git", .branch("main"))
+    ],
     targets: [
         .executableTarget(
             name: "AppModule",
+            dependencies: [
+                .product(name: "LaTeXSwiftUI", package: "latexswiftui")
+            ],
             path: "."
         )
     ]
