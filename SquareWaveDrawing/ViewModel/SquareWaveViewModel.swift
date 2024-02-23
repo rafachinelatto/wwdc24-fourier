@@ -16,6 +16,7 @@ class SquareWaveViewModel: ObservableObject {
     var fourierSeries: [Complex] = []
     var wave: [Complex] = []
     var drawWave: [CGPoint] = []
+    var drawSquareWave: [CGPoint] = []
     @Published var epicyclePath: Path = Path()
     @Published var wavePath: Path = Path()
     @Published var linePath: Path = Path()
@@ -38,6 +39,7 @@ class SquareWaveViewModel: ObservableObject {
         var epiPath = Path()
         var waPath = Path()
         var lPath = Path()
+        var sqPath = Path()
         
         var newPoint = circlesCenter
         var maxCount: Int = 1
@@ -85,6 +87,27 @@ class SquareWaveViewModel: ObservableObject {
         self.linePath = lPath
         self.epicyclePath = epiPath
         self.wavePath = waPath
+        
+        for i in maxCount..<fourierSeries.count {
+            let phi = ((Double(fourierSeries[i].freq) * time)) + fourierSeries[i].phase
+            
+            newPoint.x += fourierSeries[i].mod * cos(phi)
+            newPoint.y += fourierSeries[i].mod * sin(phi)
+        }
+        drawSquareWave.insert(newPoint, at: 0)
+        if drawSquareWave.count >= numberOfPoints {
+            drawSquareWave.removeLast()
+        }
+        
+        if drawSquareWave.count > 0 {
+            sqPath.move(to: CGPoint(x: startX, y: drawSquareWave[0].y))
+            
+            for i in 1..<drawSquareWave.count {
+                sqPath.addLine(to: CGPoint(x: startX + step * Double(i), y: drawSquareWave[i].y))
+            }
+        }
+        
+        self.squareWavePath = sqPath
     }
     
     

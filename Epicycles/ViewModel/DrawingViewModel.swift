@@ -13,6 +13,8 @@ class DrawingViewModel: ObservableObject {
     var center: CGPoint = .zero
     var fourierSeries: [Complex] = []
     @Published var epiclyclePath: Path = Path()
+    @Published var linesPath: Path = Path()
+    @Published var circlePath: Path = Path()
     @Published var wave: [CGPoint] = []
     
     init(center: CGPoint = .zero, fourierSeries: [Complex] = [], wave: [CGPoint] = [], epicyclePath: Path = Path()) {
@@ -39,7 +41,9 @@ class DrawingViewModel: ObservableObject {
     func updateWave(time: CGFloat, numberOfCircles: Int) {
         
         var newPoint: CGPoint = center
-        var path = Path()
+        var epiPath = Path()
+        var lPath = Path()
+        var cPath = Path()
         var maxCount: Int = 1
         
         if numberOfCircles >= fourierSeries.count {
@@ -51,20 +55,26 @@ class DrawingViewModel: ObservableObject {
         
         for i in 0..<maxCount {
         
-            path.addArc(center: newPoint, radius: fourierSeries[i].mod, startAngle: Angle(degrees: 0), endAngle: Angle(degrees: 360), clockwise: true)
-            path.move(to: newPoint)
+            epiPath.addArc(center: newPoint, radius: fourierSeries[i].mod, startAngle: Angle(degrees: 0), endAngle: Angle(degrees: 360), clockwise: true)
+            epiPath.move(to: newPoint)
+            lPath.move(to: newPoint)
             
             let phi = ((Double(fourierSeries[i].freq) * time)) + fourierSeries[i].phase
             
             newPoint.x += fourierSeries[i].mod * cos(phi)
             newPoint.y += fourierSeries[i].mod * sin(phi)
             
-            path.addLine(to: newPoint)
-            path.closeSubpath()
+            lPath.addLine(to: newPoint)
+            epiPath.closeSubpath()
+            lPath.closeSubpath()
         }
         
+        cPath.addArc(center: newPoint, radius: 4, startAngle: Angle(degrees: 0), endAngle: Angle(degrees: 360), clockwise: true)
         wave.append(newPoint)
-        self.epiclyclePath = path
+        
+        self.circlePath = cPath
+        self.epiclyclePath = epiPath
+        self.linesPath = lPath
         
         if wave.count >= Int(Double(fourierSeries.count) * 0.95) {
             wave.removeFirst()

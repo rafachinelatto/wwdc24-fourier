@@ -41,6 +41,7 @@ struct DrawingView: View {
                 
                 viewModel.epiclyclePath.stroke(lineWidth: 1)
                 
+                
             }.onReceive(timer, perform: { _ in
                 let dt: Double = (2 * Double.pi) / Double(viewModel.fourierSeries.count)
                 time += dt

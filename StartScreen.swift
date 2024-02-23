@@ -14,17 +14,18 @@ struct StartScreen: View {
     
     private var aboutMe: String =
 """
-    Rafael é um estudante na Apple Developer Academy de Campinas, além de ser estudade de engenharia elétrica na Unicamp.
+    Rafael is a student at the Apple Developer Academy in Campinas, as well as a student of electrical engineering at the State University of Campinas.
 """
     
     private var learn: String =
 """
-    Este app foi feito para mostrar o que é a transformada de fourier e descobrir algumas coisas legais que podem ser feitas com ela.
+    This app was made to demonstrate what the Fourier transform is and discover some cool things that can be done with it.
 """
     
     private var fourierExplanation: String =
 """
-    A transformada de fourier é utilizada para separar um sinal qualquer em uma soma de ondas senoidais de frequências diferentes. Ela é útil em diversas áreas que envolvem processamento de sinais.
+    The Fourier Transform is a tool that breaks down signals into their basic building blocks or frequencies. It helps us understand and analyze waves in terms of the different pitches or tones they contain.
+    It plays a crucial role in telecommunications, image processing, and medicine, making it indispensable for understanding wave patterns.
 """
     
     var body: some View {
@@ -37,6 +38,7 @@ struct StartScreen: View {
                     Image(systemName: "person")
                         .font(.title)
                         .foregroundStyle(Color.accentColor)
+                        .padding(.trailing, 5)
                     
                     VStack {
                         HStack {
