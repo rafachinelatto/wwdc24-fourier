@@ -19,25 +19,25 @@ struct FourierTransformExplanation1: View {
     To break the signal into individual frequencies, we use the following formula:
 """
     
-    private var text02: String =
-"""
-    In this formula, $x_{n}$ represents the signal, and $X_{k}$ is the transform, both being sequences.
-
-    This formula might be a bit challenging to grasp, but our computer can compute it very rapidly.
-
-    Each term of $X_{k}$ is a complex number that, in polar coordinates, represents the phase and magnitude of a sine wave with the frequency k.
-"""
-    
     private var fourierTransform = "$X_k=\\sum_{n=0}^{N-1}x_n\\cdot e^{-i2\\pi\\frac{k}{N}n}$"
     
-    private var inverseTransform = "$x_n=\\frac{1}{N}\\sum_{k=0}^{N-1}X_k\\cdot e^{i2\\pi\\frac{k}{N}n}$"
+    private var text02: String =
+"""
+    In this formula, $x_{n}$ represents the signal, and $X_{k}$ is the transform, both being sequences of terms.
+
+    Each term of $X_{k}$ is a complex number that, in polar coordinates, represents the phase and magnitude of a sine wave with the frequency k.
+
+    This formula might be a bit challenging to grasp, so let's take an visual aproach to understand what it does.
+"""
+    
     
     @State private var next: Bool = false
     
     var body: some View {
         VStack {
             Text(text01)
-                .padding()
+                .padding(.horizontal)
+                .padding(.bottom)
             
             ZStack {
                 RoundedRectangle(cornerRadius: 10, style: .circular)
@@ -55,7 +55,7 @@ struct FourierTransformExplanation1: View {
                 }
             }
             .padding()
-            .frame(maxWidth: .infinity, maxHeight: 150)
+            .frame(maxWidth: .infinity, maxHeight: 100)
             
             LaTeX(text02)
                 .padding()

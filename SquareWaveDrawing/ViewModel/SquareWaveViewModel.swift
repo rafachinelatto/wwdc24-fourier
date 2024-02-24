@@ -17,10 +17,14 @@ class SquareWaveViewModel: ObservableObject {
     var wave: [Complex] = []
     var drawWave: [CGPoint] = []
     var drawSquareWave: [CGPoint] = []
+    var centerPoints: [CGPoint] = []
+    
     @Published var epicyclePath: Path = Path()
     @Published var wavePath: Path = Path()
     @Published var linePath: Path = Path()
     @Published var squareWavePath: Path = Path()
+    @Published var pointPath: Path = Path()
+    @Published var centerPath: Path = Path()
     
     
     func configuration(circlesCenter: CGPoint, StartX: CGFloat, waveWidth: CGFloat, amplitude: CGFloat, numberOfPoints: Int) {
@@ -40,6 +44,8 @@ class SquareWaveViewModel: ObservableObject {
         var waPath = Path()
         var lPath = Path()
         var sqPath = Path()
+        var pPath = Path()
+        var cPath = Path()
         
         var newPoint = circlesCenter
         var maxCount: Int = 1
@@ -84,9 +90,20 @@ class SquareWaveViewModel: ObservableObject {
             lPath.addLine(to: CGPoint(x: startX, y: drawWave[0].y))
         }
         
+        centerPoints.insert(newPoint, at: 0)
+        if centerPoints.count >= Int(Double(fourierSeries.count) * 0.2) {
+            centerPoints.removeLast()
+        }
+        
+        cPath.addLines(centerPoints)
+        
+        pPath.addArc(center: newPoint, radius: 4, startAngle: Angle(degrees: 0), endAngle: Angle(degrees: 360), clockwise: true)
+        
         self.linePath = lPath
         self.epicyclePath = epiPath
         self.wavePath = waPath
+        self.pointPath = pPath
+        self.centerPath = cPath
         
         for i in maxCount..<fourierSeries.count {
             let phi = ((Double(fourierSeries[i].freq) * time)) + fourierSeries[i].phase

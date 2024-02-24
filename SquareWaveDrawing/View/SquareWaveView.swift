@@ -14,13 +14,13 @@ struct SquareWaveView: View {
     let timer = Timer.publish(every: 0.005, on: .main, in: .common).autoconnect()
     @State var time: Double = 0
     
-    @State var numberOfCircles: Int = 4
+    @State var numberOfCircles: Int = 2
     
     var body: some View {
         GeometryReader { geometry in
             
             VStack {
-                Stepper("Number of circles: \(numberOfCircles)") {
+                Stepper("Number of terms: \(numberOfCircles)") {
                     numberOfCircles += 2
                 } onDecrement: {
                     if numberOfCircles > 2 {

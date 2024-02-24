@@ -9,20 +9,18 @@ import SwiftUI
 
 struct FourierTransformExplanation2: View {
     
-    private var title: String = "Square Wave I"
+    private var title: String = "Square Wave Transform"
     
     private var text01: String =
 """
-    Let's apply the Fourier Transform we just saw to a square wave to understand how it works.
-
-    This is a square wave:
+    First, let's apply the Fourrier Transform to the following square wave, and we will vizualize the result.
 """
-    
+
     private var text02: String =
 """
-    Applying the fourier transform we get a series of sine waves, to represent this sine waves we can use rotating circles.
+    The result of the transform is a series of terms where each term can be represented by a rotating circle and, when we add the terms, it aproximates the original wave.
 
-    Let's visualize the first four components of the series.
+    Here, you can see the result and add more terms to see what happens:
 """
     
     @State private var next: Bool = false
@@ -55,11 +53,11 @@ struct FourierTransformExplanation2: View {
             //                .padding(.leading, 40)
             
             Text(text02)
-                .padding()
+                .padding(.horizontal)
             
             
-            SquareWaveTwoComponents()
-                .frame(maxWidth: .infinity, maxHeight: UIScreen.main.bounds.height * 0.2)
+            SquareWaveView()
+                .frame(maxWidth: .infinity, maxHeight: UIScreen.main.bounds.height * 0.25)
                 .padding()
             
             Spacer()
@@ -73,7 +71,9 @@ struct FourierTransformExplanation2: View {
                 FourierTransformExplanation3()
             }
             
-        }.navigationTitle(title)
+        }
+        .navigationTitle(title)
+        .navigationBarTitleDisplayMode(.inline)
         
     }
 }
