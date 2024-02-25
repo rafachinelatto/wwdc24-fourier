@@ -1,15 +1,15 @@
 # Fourier Drawing 
 
 ## The app
-  	My app idea originated from my experiences in the electrical engineering course and a strong desire to share knowledge. In electrical engineering, we frequently encounter the Fourier transform—a powerful and intriguing mathematical tool, though challenging to comprehend.
+My app idea originated from my experiences in the electrical engineering course and a strong desire to share knowledge. In electrical engineering, we frequently encounter the Fourier transform—a powerful and intriguing mathematical tool, though challenging to comprehend.
    
-	During my initial exposure to the Fourier transform, the intricate calculations left me perplexed, lacking apparent coherence. However, with continuous study, a newfound understanding transformed my perception, and I began to appreciate its incredible significance.
+During my initial exposure to the Fourier transform, the intricate calculations left me perplexed, lacking apparent coherence. However, with continuous study, a newfound understanding transformed my perception, and I began to appreciate its incredible significance.
  
-	Motivated by this journey, I aspired to develop an app that not only imparts knowledge but also conveys the sense of awe I experienced upon truly grasping the concept. 
+Motivated by this journey, I aspired to develop an app that not only imparts knowledge but also conveys the sense of awe I experienced upon truly grasping the concept. 
  
-	To achieve this goal, I adopted a more visual approach, steering away from the intimidating calculations that often deter learners. This way, I aim to highlight the beauty inherent in this mathematical tool, making it more accessible and captivating for a broader audience.
+To achieve this goal, I adopted a more visual approach, steering away from the intimidating calculations that often deter learners. This way, I aim to highlight the beauty inherent in this mathematical tool, making it more accessible and captivating for a broader audience.
  
-	And what enables me to develop the app exactly as intended is the knowledge I continue to acquire through my participation in the Apple Developer Academy in Campinas, Brazil.
+And what enables me to develop the app exactly as intended is the knowledge I continue to acquire through my participation in the Apple Developer Academy in Campinas, Brazil.
 
 ## How to run it
 Download the ZIP file and open the .swiftpm file using Xcode. This app is designed to run on an iPhone with iOS 16.0 or later; you can also run it in a simulator if desired.
