@@ -8,13 +8,13 @@ import PackageDescription
 import AppleProductTypes
 
 let package = Package(
-    name: "wwdc",
+    name: "Fourier Drawing",
     platforms: [
         .iOS("16.0")
     ],
     products: [
         .iOSApplication(
-            name: "wwdc",
+            name: "Fourier Drawing",
             targets: ["AppModule"],
             bundleIdentifier: "rafachinelatto.wwdc",
             teamIdentifier: "J3D6H27WWS",
@@ -32,9 +32,7 @@ let package = Package(
                 .landscapeLeft,
                 .portraitUpsideDown(.when(deviceFamilies: [.pad]))
             ],
-            capabilities: [
-                .camera(purposeString: "A camera é usada para tirar uma foto que será usada no app, essa foto não é salva em nenhum lugar.")
-            ]
+            appCategory: .education
         )
     ],
     dependencies: [
