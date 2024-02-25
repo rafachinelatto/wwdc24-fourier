@@ -15,8 +15,12 @@ And what enables me to develop the app exactly as intended is the knowledge I co
 Download the ZIP file and open the .swiftpm file using Xcode. This app is designed to run on an iPhone with iOS 16.0 or later; you can also run it in a simulator if desired.
 
 ## About the autor
-  My name is Rafael Chinelatto, currently studying Electrical Engineering at Unicamp. I'm part of the 2023 class at the Apple Developer Academy in Campinas, Brazil.
-	I have always been very interested in the field of education. During my school years, I consistently did my best to assist my classmates. When I entered university, I had my first real encounter with programming where I learned Python, and that's when I fell in love with the field, realizing the abundant opportunities it brings.
-	Throughout the course, I delved deeper into programming, particularly low-level programming focused on microprocessors, sparking a strong interest in robotics. 
-	Consequently, I joined a robotics study group, combining two passions: education and robotics. In this group, we worked on diverse robotics projects, including robot soccer in the VSSS category. There was also a social project, introducing robotics to public school students through workshops. These experiences were enriching and contributed significantly to my personal growth.
-	Last year, I fulfilled another dream by delving deeper into programming; I joined the Apple Developer Academy, where I've been learning extensively about app development. This opportunity allows me to create applications that have the potential to positively impact the world for the better.
+My name is Rafael Chinelatto, currently studying Electrical Engineering at Unicamp. I'm part of the 2023 class at the Apple Developer Academy in Campinas, Brazil.
+
+I have always been very interested in the field of education. During my school years, I consistently did my best to assist my classmates. When I entered university, I had my first real encounter with programming where I learned Python, and that's when I fell in love with the field, realizing the abundant opportunities it brings.
+
+Throughout the course, I delved deeper into programming, particularly low-level programming focused on microprocessors, sparking a strong interest in robotics. 
+
+Consequently, I joined a robotics study group, combining two passions: education and robotics. In this group, we worked on diverse robotics projects, including robot soccer in the VSSS category. There was also a social project, introducing robotics to public school students through workshops. These experiences were enriching and contributed significantly to my personal growth.
+
+Last year, I fulfilled another dream by delving deeper into programming; I joined the Apple Developer Academy, where I've been learning extensively about app development. This opportunity allows me to create applications that have the potential to positively impact the world for the better.
