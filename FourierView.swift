@@ -161,15 +161,14 @@ struct FourierView: View {
                     }
                 }
                 .toolbar {
-                    Button(action: {
+                    
+                    Button("Redraw") {
                         points.removeAll()
                         complexPoints.removeAll()
                         viewModel.reset()
                         finishedDrawing = false
                         showFourier = false
                         numberOfCircles = 2
-                    }) {
-                        Image(systemName: "arrow.counterclockwise")
                     }
                 }
                 .navigationTitle("Fourier Drawing")
